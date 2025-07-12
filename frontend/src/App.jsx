@@ -5,6 +5,7 @@ import RegisterPage from "./components/Register";
 import LatestQuestions from "./components/latestQuestion";
 import { AuthProvider } from "./contexts/authContext";
 import ProtectedRoute from "./components/protectedRoutes";
+import QuestionDetail from "./components/questionalDetails";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route path="/question/:id" element={<QuestionDetail />} />
         </Routes>
       </Router>
     </AuthProvider>

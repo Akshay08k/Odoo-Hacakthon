@@ -420,12 +420,13 @@ const LatestQuestions = () => {
                       <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-4">
                         <h2 className="text-xl font-semibold text-gray-800 hover:text-blue-600 cursor-pointer flex-1 leading-relaxed group-hover:text-blue-600 transition-colors duration-200">
                           <a
-                            href={`/question-detail?id=${question.id}`}
+                            href={`/question/${question._id}`}
                             className="hover:underline"
                           >
                             {question.title}
                           </a>
                         </h2>
+                        {console.log(question)}
                         <div className="flex items-center gap-3 flex-shrink-0">
                           <span className="bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 rounded-full text-sm font-medium">
                             {question.answersCount || 0}{" "}
