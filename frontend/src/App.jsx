@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
 import RegisterPage from "./components/Register";
 import LatestQuestions from "./components/latestQuestion";
-import AskQuestionPopup from "./askQuestionPopup";
-
 const App = () => {
   return (
     <Router>

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 import {
   FaTimes,
   FaBold,
@@ -14,16 +14,17 @@ import {
   FaAlignRight,
   FaQuestion,
   FaPlus,
-  FaTimes as FaTimesSmall
-} from 'react-icons/fa';
+  FaTimes as FaTimesSmall,
+} from "react-icons/fa";
+import axios from "axios";
 
-export default function AskQuestionPopup({ open , onClose }) {
+export default function AskQuestionPopup({ open, onClose }) {
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    tags: []
+    title: "",
+    description: "",
+    tags: [],
   });
-  const [currentTag, setCurrentTag] = useState('');
+  const [currentTag, setCurrentTag] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const editorRef = useRef(null);
@@ -31,25 +32,25 @@ export default function AskQuestionPopup({ open , onClose }) {
   useEffect(() => {
     if (!open) {
       setFormData({
-        title: '',
-        description: '',
-        tags: []
+        title: "",
+        description: "",
+        tags: [],
       });
-      setCurrentTag('');
+      setCurrentTag("");
       setErrors({});
     }
   }, [open]);
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
 
     if (errors[field]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [field]: ''
+        [field]: "",
       }));
     }
   };
@@ -60,23 +61,23 @@ export default function AskQuestionPopup({ open , onClose }) {
       formData.tags.length < 5 &&
       !formData.tags.includes(currentTag.trim())
     ) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        tags: [...prev.tags, currentTag.trim()]
+        tags: [...prev.tags, currentTag.trim()],
       }));
-      setCurrentTag('');
+      setCurrentTag("");
     }
   };
 
   const handleTagRemove = (tagToRemove) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      tags: prev.tags.filter(tag => tag !== tagToRemove)
+      tags: prev.tags.filter((tag) => tag !== tagToRemove),
     }));
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && currentTag.trim()) {
+    if (e.key === "Enter" && currentTag.trim()) {
       e.preventDefault();
       handleTagAdd();
     }
@@ -88,22 +89,22 @@ export default function AskQuestionPopup({ open , onClose }) {
   };
 
   const insertLink = () => {
-    const url = prompt('Enter the URL:');
+    const url = prompt("Enter the URL:");
     if (url) {
-      execCommand('createLink', url);
+      execCommand("createLink", url);
     }
   };
 
   const insertImage = () => {
-    const url = prompt('Enter the image URL:');
+    const url = prompt("Enter the image URL:");
     if (url) {
-      execCommand('insertImage', url);
+      execCommand("insertImage", url);
     }
   };
 
   const handleEditorChange = () => {
     const content = editorRef.current.innerHTML;
-    handleInputChange('description', content);
+    handleInputChange("description", content);
   };
 
   const handleSubmit = async (e) => {
@@ -113,15 +114,15 @@ export default function AskQuestionPopup({ open , onClose }) {
     const newErrors = {};
 
     if (!formData.title.trim()) {
-      newErrors.title = 'Title is required';
+      newErrors.title = "Title is required";
     }
 
-    if (!formData.description.trim() || formData.description === '<br>') {
-      newErrors.description = 'Description is required';
+    if (!formData.description.trim() || formData.description === "<br>") {
+      newErrors.description = "Description is required";
     }
 
     if (formData.tags.length === 0) {
-      newErrors.tags = 'At least one tag is required';
+      newErrors.tags = "At least one tag is required";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -130,17 +131,24 @@ export default function AskQuestionPopup({ open , onClose }) {
     }
 
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/question/post",
+        formData
+      );
+      console.log(res);
       setIsLoading(false);
-      alert('Question submitted successfully! (This is a demo)');
       onClose();
-    }, 1500);
+    } catch (error) {
+      console.error(error);
+      setIsLoading(false);
+    }
   };
 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black/300 backdrop-blur bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 flex items-center justify-between">
           <div className="flex items-center">
@@ -158,16 +166,19 @@ export default function AskQuestionPopup({ open , onClose }) {
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
           <div className="space-y-6">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Question Title *
               </label>
               <input
                 type="text"
                 id="title"
                 value={formData.title}
-                onChange={(e) => handleInputChange('title', e.target.value)}
+                onChange={(e) => handleInputChange("title", e.target.value)}
                 className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-                  errors.title ? 'border-red-500' : 'border-gray-300'
+                  errors.title ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="Enter your question title"
                 maxLength={200}
@@ -186,7 +197,7 @@ export default function AskQuestionPopup({ open , onClose }) {
                 <div className="flex gap-1">
                   <button
                     type="button"
-                    onClick={() => execCommand('bold')}
+                    onClick={() => execCommand("bold")}
                     className="p-2 rounded hover:bg-gray-200 transition-colors"
                     title="Bold"
                   >
@@ -194,7 +205,7 @@ export default function AskQuestionPopup({ open , onClose }) {
                   </button>
                   <button
                     type="button"
-                    onClick={() => execCommand('italic')}
+                    onClick={() => execCommand("italic")}
                     className="p-2 rounded hover:bg-gray-200 transition-colors"
                     title="Italic"
                   >
@@ -202,7 +213,7 @@ export default function AskQuestionPopup({ open , onClose }) {
                   </button>
                   <button
                     type="button"
-                    onClick={() => execCommand('strikeThrough')}
+                    onClick={() => execCommand("strikeThrough")}
                     className="p-2 rounded hover:bg-gray-200 transition-colors"
                     title="Strikethrough"
                   >
@@ -215,7 +226,7 @@ export default function AskQuestionPopup({ open , onClose }) {
                 <div className="flex gap-1">
                   <button
                     type="button"
-                    onClick={() => execCommand('insertOrderedList')}
+                    onClick={() => execCommand("insertOrderedList")}
                     className="p-2 rounded hover:bg-gray-200 transition-colors"
                     title="Numbered List"
                   >
@@ -223,7 +234,7 @@ export default function AskQuestionPopup({ open , onClose }) {
                   </button>
                   <button
                     type="button"
-                    onClick={() => execCommand('insertUnorderedList')}
+                    onClick={() => execCommand("insertUnorderedList")}
                     className="p-2 rounded hover:bg-gray-200 transition-colors"
                     title="Bullet List"
                   >
@@ -236,7 +247,7 @@ export default function AskQuestionPopup({ open , onClose }) {
                 <div className="flex gap-1">
                   <button
                     type="button"
-                    onClick={() => execCommand('justifyLeft')}
+                    onClick={() => execCommand("justifyLeft")}
                     className="p-2 rounded hover:bg-gray-200 transition-colors"
                     title="Align Left"
                   >
@@ -244,7 +255,7 @@ export default function AskQuestionPopup({ open , onClose }) {
                   </button>
                   <button
                     type="button"
-                    onClick={() => execCommand('justifyCenter')}
+                    onClick={() => execCommand("justifyCenter")}
                     className="p-2 rounded hover:bg-gray-200 transition-colors"
                     title="Align Center"
                   >
@@ -252,7 +263,7 @@ export default function AskQuestionPopup({ open , onClose }) {
                   </button>
                   <button
                     type="button"
-                    onClick={() => execCommand('justifyRight')}
+                    onClick={() => execCommand("justifyRight")}
                     className="p-2 rounded hover:bg-gray-200 transition-colors"
                     title="Align Right"
                   >
@@ -287,14 +298,16 @@ export default function AskQuestionPopup({ open , onClose }) {
                 contentEditable
                 onInput={handleEditorChange}
                 className={`min-h-[200px] p-4 border-l border-r border-b border-gray-300 rounded-b-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.description ? 'border-red-500' : ''
+                  errors.description ? "border-red-500" : ""
                 }`}
-                style={{ lineHeight: '1.6' }}
+                style={{ lineHeight: "1.6" }}
                 placeholder="Describe your question in detail..."
                 suppressContentEditableWarning={true}
               />
               {errors.description && (
-                <p className="text-red-500 text-sm mt-1">{errors.description}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.description}
+                </p>
               )}
             </div>
 
@@ -361,8 +374,8 @@ export default function AskQuestionPopup({ open , onClose }) {
             disabled={isLoading}
             className={`px-6 py-2 rounded-lg font-medium text-white transition-all duration-200 ${
               isLoading
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700 active:transform active:scale-95'
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700 active:transform active:scale-95"
             }`}
           >
             {isLoading ? (
@@ -371,7 +384,7 @@ export default function AskQuestionPopup({ open , onClose }) {
                 Submitting...
               </div>
             ) : (
-              'Submit Question'
+              "Submit Question"
             )}
           </button>
         </div>

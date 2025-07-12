@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { CiMail } from "react-icons/ci";
+import axios from "axios";
 import { FaEye, FaEyeSlash, FaLock, FaSignInAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
@@ -37,11 +38,23 @@ export default function LoginPage() {
       return;
     }
 
-    setIsLoading(true);
-    setTimeout(() => {
+    try {
+      setIsLoading(true);
+      const res = await axios.post("http://localhost:5000/api/login", {
+        email,
+        password,
+      });
       setIsLoading(false);
-      alert("Login successful! (This is a demo)");
-    }, 1500);
+      console.log(res);
+    } catch (error) {
+      console.error(error);
+    }
+    //   setIsLoading(false);
+    //   localStorage.setItem("token", response.data.token);
+    //   window.location.href = "/dashboard";
+    // } catch (error) {
+    //   console.error(error);
+    //   setIsLoading(false);
   };
 
   return (
@@ -115,21 +128,6 @@ export default function LoginPage() {
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">{errors.password}</p>
             )}
-          </div>
-          <div className="flex items-center justify-between">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              />
-              <span className="ml-2 text-sm text-gray-600">Remember me</span>
-            </label>
-            <button
-              type="button"
-              className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
-            >
-              Forgot password?
-            </button>
           </div>
 
           <button
