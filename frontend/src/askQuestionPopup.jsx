@@ -16,7 +16,7 @@ import {
   FaPlus,
   FaTimes as FaTimesSmall,
 } from "react-icons/fa";
-import axios from "axios";
+import axios from "./api/axios";
 
 export default function AskQuestionPopup({ open, onClose }) {
   const [formData, setFormData] = useState({
@@ -132,10 +132,7 @@ export default function AskQuestionPopup({ open, onClose }) {
 
     setIsLoading(true);
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/question/post",
-        formData
-      );
+      const res = await axios.post("/api/question/post", formData);
       console.log(res);
       setIsLoading(false);
       onClose();

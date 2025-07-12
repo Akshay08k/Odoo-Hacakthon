@@ -1,9 +1,8 @@
 import express from "express";
 import User from "../models/User.js";
-import { authenticate } from "../middleware/auth.js";
+import { authenticate } from "../middlware/auth.js";
 
 const router = express.Router();
-
 
 router.get("/me", authenticate, async (req, res) => {
   try {

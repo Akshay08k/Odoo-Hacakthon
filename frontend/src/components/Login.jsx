@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { CiMail } from "react-icons/ci";
-import axios from "axios";
+import axios from "../api/axios";
 import { FaEye, FaEyeSlash, FaLock, FaSignInAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
@@ -40,21 +40,18 @@ export default function LoginPage() {
 
     try {
       setIsLoading(true);
-      const res = await axios.post("http://localhost:5000/api/login", {
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
         email,
         password,
       });
       setIsLoading(false);
-      console.log(res);
+      if (res.status === 200) {
+        localStorage.setItem("token", res.data.token);
+        window.location.href = "/";
+      }
     } catch (error) {
       console.error(error);
     }
-    //   setIsLoading(false);
-    //   localStorage.setItem("token", response.data.token);
-    //   window.location.href = "/dashboard";
-    // } catch (error) {
-    //   console.error(error);
-    //   setIsLoading(false);
   };
 
   return (
