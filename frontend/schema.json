@@ -1,0 +1,61 @@
+{
+  "users": {
+    "_id": "ObjectId",
+    "name": "String",
+    "username": "String",
+    "email": "String",
+    "passwordHash": "String",
+    "profile": "String",
+    "avatarUrl": "String",
+    "role": "String (guest | user | admin)"
+  },
+  "questions": {
+    "_id": "ObjectId",
+    "userId": "ObjectId (ref: users)",
+    "title": "String",
+    "description": "String (rich text: HTML/Markdown/Quill JSON)",
+    "tags": "Array of ObjectId (ref: tags)",
+    "isResolved": "Boolean (default: false)",
+    "isApproved": "Boolean (default: true)",
+    "acceptedAnswerId": "ObjectId (ref: answers, nullable)",
+    "createdAt": "Date",
+    "updatedAt": "Date"
+  },
+  "answers": {
+    "_id": "ObjectId",
+    "questionId": "ObjectId (ref: questions)",
+    "userId": "ObjectId (ref: users)",
+    "content": "String (rich text)",
+    "votes": "Integer (denormalized total)",
+    "createdAt": "Date",
+    "updatedAt": "Date"
+  },
+  "votes": {
+    "_id": "ObjectId",
+    "userId": "ObjectId (ref: users)",
+    "answerId": "ObjectId (ref: answers)",
+    "value": "Integer (+1 or -1)"
+  },
+  "comments": {
+    "_id": "ObjectId",
+    "answerId": "ObjectId (ref: answers)",
+    "userId": "ObjectId (ref: users)",
+    "text": "String",
+    "createdAt": "Date"
+  },
+  "notifications": {
+    "_id": "ObjectId",
+    "toUserId": "ObjectId (ref: users)",
+    "byUserId": "ObjectId (ref: users)",
+    "questionId": "ObjectId (ref: questions, optional)",
+    "answerId": "ObjectId (ref: answers, optional)",
+    "type": "String (answer | comment | mention)",
+    "isRead": "Boolean (default: false)",
+    "createdAt": "Date"
+  },
+  "tags": {
+    "_id": "ObjectId",
+    "name": "String",
+    "createdAt": "Date"
+  }
+}
